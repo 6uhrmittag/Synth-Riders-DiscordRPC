@@ -3,3 +3,5 @@ psutil
 pyinstaller
 rich
 pywin32
+websocket-client
+requests

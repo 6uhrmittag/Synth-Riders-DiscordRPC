@@ -3,7 +3,7 @@ from os import getenv
 
 
 class Config:
-    MAIN_EXECUTABLE_NAME = "Wuthering Waves RPC.exe"
-    UNINSTALL_EXECUTABLE_NAME = "Uninstall Wuthering Waves RPC.exe"
-    APPLICATION_ID = "1243855663210303488"
-    WUWA_PROCESS_NAME = "Wuthering Waves.exe"
+    MAIN_EXECUTABLE_NAME = "Synth Riders RPC.exe"
+    UNINSTALL_EXECUTABLE_NAME = "Uninstall Synth Riders RPC.exe"
+    APPLICATION_ID = "1342397301687189544"
+    SYNTH_RIDERS_PROCESS_NAME = "SynthRiders.exe"

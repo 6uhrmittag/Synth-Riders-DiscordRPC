@@ -23,7 +23,7 @@ from src.utilities.cli import (
 
 console = Console()
 
-DEFAULT_WUWA_INSTALL_LOCATION = r"C:\Wuthering Waves"
+DEFAULT_WUWA_INSTALL_LOCATION = r"C:\Program Files (x86)\Steam\steamapps\common\SynthRiders"
 DEFAULT_RICH_PRESENCE_INSTALL_LOCATION = (
     rf"{getenv('LOCALAPPDATA')}\Wuthering Waves RPC"
 )
