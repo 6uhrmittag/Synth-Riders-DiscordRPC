@@ -179,7 +179,7 @@ class Presence:
                 self.presence.update(
                     details=None,
                     state="Browsing menus",
-                    large_image=DiscordAssets.LARGE_IMAGE,
+                    large_image=self.config.get("discord_application_logo_large"),
                     buttons=buttons,
                     start=self.start_time
                 )
