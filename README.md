@@ -3,9 +3,9 @@
 [![PyPresence](https://img.shields.io/badge/using-pypresence-00bb88.svg?style=for-the-badge&logo=discord&logoWidth=20)](https://github.com/qwertyquerty/pypresence)
 ![Language](https://img.shields.io/github/languages/top/xAkre/Wuthering-Waves-RPC?style=for-the-badge)
 
-# Wuthering Waves Discord Rich Presence
+# Synth Riders Discord Rich Presence
 
-Enables Discord Rich Presence for Wuthering Waves
+Enables Discord Rich Presence for Synth Riders
 <div style="display: flex; flex-direction: column; gap: 10px">
     <div style="width: 100%; display: flex; gap: 10px; justify-content: center;">
         <img src="screenshots/light-db.png" style="width: 45%; height: 50%">
@@ -30,22 +30,20 @@ Enables Discord Rich Presence for Wuthering Waves
 
 ## Features
 
-- RPC variants
-  - Database access variant
-    - This variant accesses the game's local database to retrieve information about the user's union level and region. You should note, however, that this could violate the game's terms of service, potentially leading to account suspension or banning
-  - Non-Database access variant
-    - This variant does not access the game's local database, eliminating the risk of violating the game's terms of service
+- Detailed Discord RPC based on the output of https://github.com/bookdude13/SynthRiders-Websockets-Mod 
 - Automatic launch on startup
   - Allows the RPC application to start automatically when the user logs in, removing the need to manually start the application
 
 ## Installing
 
-1. Download the [latest release](
-    https://github.com/xAkre/Wuthering-Waves-RPC/releases/latest
+1. Install the [Synth Riders Websockets Mod](https://github.com/bookdude13/SynthRiders-Websockets-Mod)
+   1. (For instructions see the mod's README.md).
+2. Download the [latest release](
+    https://github.com/6uhrmittag/Synth-Riders-RPC/releases/latest
 ) 
-2. Run the setup executable
-3. Go through the setup process
-4. You're done!
+3. Run the setup executable
+4. Go through the setup process
+5. You're done!
 
 You may delete the setup executable after installation
 
@@ -62,9 +60,13 @@ You may delete the setup executable after installation
 
 # Issues
 
-If you encounter any issues, please open an issue on the [issues page](https://github.com/xAkre/Wuthering-Waves-RPC/issues)
+If you encounter any issues, please open an issue on the [issues page](https://github.com/6uhrmittag/Synth-Riders-RPC/issues)
 
 ## Warning
 
-This is a third-party application and is not affiliated with Wuthering Waves or its developers. Should you choose to use the RPC with the database access option, you do so at your own risk
+This is a third-party application and is not affiliated with Synth Riders or its developers.
+
+# Credits
+
+- This tool is based on the work of [https://github.com/xAkre/Wuthering-Waves-RPC](https://github.com/xAkre/Wuthering-Waves-RPC)<3
 
