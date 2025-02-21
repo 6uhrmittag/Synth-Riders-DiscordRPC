@@ -100,13 +100,17 @@ class Presence:
                     "artist": event_data.get("author", "Unknown Artist"),
                     "difficulty": event_data.get("difficulty", "Unknown"),
                     "mapper": event_data.get("beatMapper", "Unknown Mapper"),
-                    "length": event_data.get("length", 0)
+                    "length": event_data.get("length", 0),
+                    "albumArt": event_data.get("albumArt", None)
                 }
                 self.song_length = self.current_song["length"]
                 self.song_progress = 0
                 self.score = 0
                 self.combo = 0
                 self.life = 1.0
+
+                self.logger.info(f"Current song data: {self.current_song}")
+
 
             elif event_type == "SongEnd":
                 self.current_song = None
@@ -123,6 +127,9 @@ class Presence:
             elif event_type == "SceneChange":
                 if event_data.get("sceneName") == "3.GameEnd":
                     self.current_song = None
+
+
+
 
     def rpc_loop(self):
         """
@@ -147,7 +154,7 @@ class Presence:
                 time_str = self.format_time(self.song_progress)
                 length_str = self.format_time(self.song_length)
 
-                details = f"In Synth Riders: {self.current_song['title']} by {self.current_song['artist']}"
+                details = f"{self.current_song['title']} by {self.current_song['artist']}"
                 state = (f"{self.current_song['difficulty']} | "
                         f"{time_str}/{length_str} | "
                         f"Score: {self.score:,} | "
@@ -157,8 +164,8 @@ class Presence:
                     details=details,
                     state=state,
                     large_image=self.config.get("discord_application_logo_large"),
-                    large_text=f"Playing Synth Riders VR",
-                    # large_text=f"Playing Synth RidersMapped by {self.current_song['mapper']}",
+                    #large_text=f"Playing Synth Riders VR",
+                    large_text=f"Mapped by {self.current_song['mapper']}",
                     small_image=self.config.get("discord_application_logo_small"),
                     small_text=f"Mapped by {self.current_song['mapper']}",
                     # small_text=f"Life: {self.life*100:.0f}%",
@@ -166,8 +173,8 @@ class Presence:
                 )
             else:
                 self.presence.update(
-                    details="Playing Synth Riders VR",
-                    state="In menus",
+                    details=None,
+                    state="Browsing menus",
                     large_image=DiscordAssets.LARGE_IMAGE,
                     buttons=buttons
                 )
