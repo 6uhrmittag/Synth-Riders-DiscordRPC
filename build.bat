@@ -1,3 +1,3 @@
-pyinstaller synth_riders_rpc.spec
-pyinstaller synth_riders_rpc_uninstall.spec
-pyinstaller synth_riders_rpc_setup.spec
+pyinstaller synth_riders_discordrpc.spec
+pyinstaller synth_riders_discordrpc_uninstall.spec
+pyinstaller synth_riders_discordrpc_setup.spec

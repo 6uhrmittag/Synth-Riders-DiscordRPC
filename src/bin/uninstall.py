@@ -46,7 +46,7 @@ def remove_startup_task_old(console: Console):
                 "schtasks",
                 "/delete",
                 "/tn",
-                "Synth Riders RPC",
+                "Synth Riders DiscordRPC",
                 "/f",
             ]
             subprocess.run(
@@ -226,7 +226,7 @@ try:
     if config["startup_preference"]:
         print_divider(
             console,
-            "[green]Removing Synth Riders RPC startup task[/green]",
+            "[green]Removing Synth Riders DiscordRPC startup task[/green]",
             "green",
         )
         remove_startup_task(console)

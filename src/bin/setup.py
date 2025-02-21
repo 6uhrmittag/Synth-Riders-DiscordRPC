@@ -25,7 +25,7 @@ console = Console()
 
 DEFAULT_SYNTHRIDERS_INSTALL_LOCATION = r"C:\Program Files (x86)\Steam\steamapps\common\SynthRiders"
 DEFAULT_RICH_PRESENCE_INSTALL_LOCATION = (
-    rf"{getenv('LOCALAPPDATA')}\Synth Riders RPC"
+    rf"{getenv('LOCALAPPDATA')}\Synth Riders DiscordRPC"
 )
 LARGE_DIVIDER = r"""
     .-.-.   .-.-.   .-.-.   .-.-.   .-.-.   .-.-.   .-.-.   .-.   
@@ -38,13 +38,13 @@ ASCII_ART = r"""
  \_____  <   |  |/    \   __\  |  \   |       _/  |/ __ |/ __ \_  __ \/  ___/
  /        \___  |   |  \  | |   Y  \  |    |   \  / /_/ \  ___/|  | \/\___ \
 /_______  / ____|___|  /__| |___|  /  |____|_  /__\____ |\___  >__|  /____  >
-        \/\/         \/          \/          \/        \/    \/           \/
-                       _____________________________
-                       \______   \______   \_   ___ \
-                        |       _/|     ___/    \  \/
-                        |    |   \|    |   \     \____
-                        |____|_  /|____|    \______  /
-                               \/                  \/
+        \/\/         \/          \/          \/        \/    \/          \/
+________  __                              .________________________________
+\______ \ |__| ______ ____  ___________  __| _/\______   \______   \_   ___ \
+ |    |  \|  |/  ___// ___\/  _ \_  __ \/ __ |  |       _/|     ___/    \  \/
+ |    `   \  |\___ \\  \__(  <_> )  | \/ /_/ |  |    |   \|    |   \     \____
+/_______  /__/____  >\___  >____/|__|  \____ |  |____|_  /|____|    \______  /
+        \/        \/     \/                 \/         \/                  \/
 """
 
 
@@ -60,7 +60,7 @@ def print_welcome_message(console: Console) -> None:
         indent(
             "\n\n",
             "[blue]Welcome! Please follow the instructions below to set up the program.[/blue]",
-            "Source code for this program can be found at https://github.com/6uhrmittag/Synth-Riders-RPC",
+            "Source code for this program can be found at https://github.com/6uhrmittag/Synth-Riders-DiscordRPC",
             "This tool is based on: https://github.com/xAkre/Wuthering-Waves-RPC",
             "[red]Please note that this program is not affiliated with Synth Riders or its developers.[/red]",
         ),
@@ -311,7 +311,7 @@ def launch_exe_on_startup(console: Console, config: dict) -> None:
                 "schtasks",
                 "/create",
                 "/tn",
-                "Synth Riders RPC",
+                "Synth Riders DiscordRPC",
                 "/tr",
                 f'"{shortcut_target}"',
                 "/sc",

@@ -1,8 +1,8 @@
 # -*- mode: python ; coding: utf-8 -*-
 
 
-uninstall = Analysis(
-    ['src/bin/uninstall.py'],
+rpc = Analysis(
+    ['src/bin/rpc.py'],
     pathex=[],
     binaries=[],
     datas=[],
@@ -15,23 +15,23 @@ uninstall = Analysis(
     optimize=0,
 )
 
-uninstall_pyz = PYZ(uninstall.pure)
+rpc_pyz = PYZ(rpc.pure)
 
-uninstall_exe = EXE(
-    uninstall_pyz,
-    uninstall.scripts,
-    uninstall.binaries,
-    uninstall.datas,
+rpc_exe = EXE(
+    rpc_pyz,
+    rpc.scripts,
+    rpc.binaries,
+    rpc.datas,
     [],
-    uac_admin=True,
-    name='Uninstall Synth Riders RPC',
+    uac_admin=False,
+    name='Synth Riders DiscordRPC',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=True,
+    console=False,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,

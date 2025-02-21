@@ -148,8 +148,8 @@ class Presence:
 
     def update_presence(self):
         buttons = [{
-            "label": "Want this status?",
-            "url": "https://github.com/your/repo"
+            "label": "Want this status too?",
+            "url": "https://github.com/6uhrmittag/Synth-Riders-DiscordRPC"
         }] if self.config.get("promote_preference") else None
 
         with self.lock:
