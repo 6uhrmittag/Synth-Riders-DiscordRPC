@@ -1,3 +1,3 @@
-pyinstaller wuthering_waves_rpc.spec
-pyinstaller wuthering_waves_rpc_uninstall.spec
-pyinstaller wuthering_waves_rpc_setup.spec
+pyinstaller synth_riders_rpc.spec
+pyinstaller synth_riders_rpc_uninstall.spec
+pyinstaller synth_riders_rpc_setup.spec

@@ -27,27 +27,27 @@ def get_boolean_input(console: Console, prompt: str) -> bool:
             )
 
 
-def get_wuwa_install_location(console: Console, default_location: str) -> str:
+def get_synthriders_install_location(console: Console, default_location: str) -> str:
     """
-    Get the Wuthering Waves install location from the user
+    Get the Synth Riders install location from the user
 
     :param console: The console to use for input and output
     :param default_location: The default install location
-    :return: The Wuthering Waves install location
+    :return: The Synth Riders install location
     """
     while True:
-        wuwa_install_location = console.input(
+        synthriders_install_location = console.input(
             indent(
-                f"Where is Wuthering Waves installed?",
+                f"Where is Synth Riders installed?",
                 f'Leave blank for the default location ("{default_location}"): ',
             )
         ).strip()
 
-        if wuwa_install_location == "":
+        if synthriders_install_location == "":
             return default_location
 
-        if path.exists(wuwa_install_location):
-            if not path.isdir(wuwa_install_location):
+        if path.exists(synthriders_install_location):
+            if not path.isdir(synthriders_install_location):
                 console.print(
                     indent(
                         "That path is not a folder. Please enter a valid folder.",
@@ -56,7 +56,7 @@ def get_wuwa_install_location(console: Console, default_location: str) -> str:
                 )
                 continue
 
-            return wuwa_install_location
+            return synthriders_install_location
 
         console.print(
             indent(
@@ -221,7 +221,7 @@ def get_promote_preference(console: Console) -> bool:
 
 def get_keep_running_preference(console: Console) -> bool:
     """
-    Get the user's preference for keeping the rich presence running after Wuthering Waves is closed
+    Get the user's preference for keeping the rich presence running after Synth Riders is closed
 
     :param console: The console to use for input and output
     :return: The user's preference for keeping the rich presence running in the background
@@ -230,7 +230,7 @@ def get_keep_running_preference(console: Console) -> bool:
         console,
         indent(
             "Would you like to keep the rich presence running in the background?",
-            "This will keep the rich presence running after Wuthering Waves is closed,",
+            "This will keep the rich presence running after Synth Riders is closed,",
             "and it will wait for the next launch (Y/N): ",
         ),
     )

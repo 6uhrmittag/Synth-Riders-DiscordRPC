@@ -14,7 +14,7 @@ from src.utilities.cli import (
     get_input,
     get_rich_presence_install_location,
     get_shortcut_preference,
-    get_wuwa_install_location,
+    get_synthriders_install_location,
     get_startup_preference,
     get_promote_preference,
     get_keep_running_preference,
@@ -23,27 +23,28 @@ from src.utilities.cli import (
 
 console = Console()
 
-DEFAULT_WUWA_INSTALL_LOCATION = r"C:\Program Files (x86)\Steam\steamapps\common\SynthRiders"
+DEFAULT_SYNTHRIDERS_INSTALL_LOCATION = r"C:\Program Files (x86)\Steam\steamapps\common\SynthRiders"
 DEFAULT_RICH_PRESENCE_INSTALL_LOCATION = (
-    rf"{getenv('LOCALAPPDATA')}\Wuthering Waves RPC"
+    rf"{getenv('LOCALAPPDATA')}\Synth Riders RPC"
 )
 LARGE_DIVIDER = r"""
     .-.-.   .-.-.   .-.-.   .-.-.   .-.-.   .-.-.   .-.-.   .-.   
     / / \ \ / / \ \ / / \ \ / / \ \ / / \ \ / / \ \ / / \ \ / / 
     `-'   `-`-'   `-`-'   `-`-'   `-`-'   `-`-'   `-`-'   `-`-'      
 """
-ASCII_ART = r"""                                                                                                      
-      __        __     _   _               _             
-      \ \      / /   _| |_| |__   ___ _ __(_)_ __   __ _ 
-       \ \ /\ / / | | | __| '_ \ / _ \ '__| | '_ \ / _` |
-        \ V  V /| |_| | |_| | | |  __/ |  | | | | | (_| |
-         \_/\_/  \__,_|\__|_| |_|\___|_|  |_|_| |_|\__, |
-      __        __                     ____  ____  |___/ 
-      \ \      / /_ ___   _____  ___  |  _ \|  _ \ / ___|
-       \ \ /\ / / _` \ \ / / _ \/ __| | |_) | |_) | |    
-        \ V  V / (_| |\ V /  __/\__ \ |  _ <|  __/| |___ 
-         \_/\_/ \__,_| \_/ \___||___/ |_| \_\_|    \____| 
-                                                
+ASCII_ART = r"""
+  _________             __  .__      __________.__    .___
+ /   _____/__.__. _____/  |_|  |__   \______   \__| __| _/___________  ______
+ \_____  <   |  |/    \   __\  |  \   |       _/  |/ __ |/ __ \_  __ \/  ___/
+ /        \___  |   |  \  | |   Y  \  |    |   \  / /_/ \  ___/|  | \/\___ \
+/_______  / ____|___|  /__| |___|  /  |____|_  /__\____ |\___  >__|  /____  >
+        \/\/         \/          \/          \/        \/    \/           \/
+                       _____________________________
+                       \______   \______   \_   ___ \
+                        |       _/|     ___/    \  \/
+                        |    |   \|    |   \     \____
+                        |____|_  /|____|    \______  /
+                               \/                  \/
 """
 
 
@@ -55,16 +56,13 @@ def print_welcome_message(console: Console) -> None:
     """
     console.print(
         "\n\n",
-        LARGE_DIVIDER,
         ASCII_ART,
-        LARGE_DIVIDER,
         indent(
             "\n\n",
-            "[blue]Thank you for choosing to use Wuthering Waves Discord Rich Presence![/blue]",
-            "Source code for this program can be found at https://github.com/xAkre/Wuthering-Waves-RPC",
-            "A star would be appreciated if you found this program useful!",
-            "Please follow the instructions below to set up the program.",
-            "[red]Please note that this program is not affiliated with Wuthering Waves or its developers.[/red]",
+            "[blue]Welcome! Please follow the instructions below to set up the program.[/blue]",
+            "Source code for this program can be found at https://github.com/6uhrmittag/Synth-Riders-RPC",
+            "This tool is based on: https://github.com/xAkre/Wuthering-Waves-RPC",
+            "[red]Please note that this program is not affiliated with Synth Riders or its developers.[/red]",
         ),
         highlight=False,
     )
@@ -76,10 +74,10 @@ def get_config(console: Console) -> dict:
 
     :param console: The console to use for input and output
     """
-    wuwa_install_location = get_input(
+    synthriders_install_location = get_input(
         console,
-        "Wuthering Waves Install Location",
-        lambda: get_wuwa_install_location(console, DEFAULT_WUWA_INSTALL_LOCATION),
+        "WSynth Riders Install Location",
+        lambda: get_synthriders_install_location(console, DEFAULT_SYNTHRIDERS_INSTALL_LOCATION),
     )
     database_access_preference = get_input(
         console,
@@ -95,7 +93,7 @@ def get_config(console: Console) -> dict:
         )
 
     config = {
-        "wuwa_install_location": wuwa_install_location,
+        "synthriders_install_location": synthriders_install_location,
         "database_access_preference": database_access_preference,
         "rich_presence_install_location": get_input(
             console,
@@ -322,7 +320,7 @@ def launch_exe_on_startup(console: Console, config: dict) -> None:
                 "schtasks",
                 "/create",
                 "/tn",
-                "Wuthering Waves RPC",
+                "Synth Riders RPC",
                 "/tr",
                 f'"{shortcut_target}"',
                 "/sc",

@@ -45,7 +45,7 @@ def remove_startup_task(console: Console):
                 "schtasks",
                 "/delete",
                 "/tn",
-                "Wuthering Waves RPC",
+                "Synth Riders RPC",
                 "/f",
             ]
             subprocess.run(
@@ -194,14 +194,14 @@ def delete_program_folder(console: Console):
         )
 
 
-print_divider(console, "Wuthering Waves Rich Presence Uninstaller", "white")
-console.input(indent("Press Enter to uninstall the Wuthering Waves Rich Presence..."))
+print_divider(console, "Synth Riders Waves Rich Presence Uninstaller", "white")
+console.input(indent("Press Enter to uninstall the Synth Riders Rich Presence..."))
 
 try:
     if config["startup_preference"]:
         print_divider(
             console,
-            "[green]Removing Wuthering Waves RPC from Windows Task Scheduler[/green]",
+            "[green]Removing Synth Riders RPC from Windows Task Scheduler[/green]",
             "green",
         )
         remove_startup_task(console)

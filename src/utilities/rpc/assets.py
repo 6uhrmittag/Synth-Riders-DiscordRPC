@@ -1,3 +1,3 @@
 class DiscordAssets:
-    LARGE_IMAGE = "logo"
-    SMALL_IMAGE = "logo"
+    LARGE_IMAGE = "game_synthriders_logo_alt"
+    SMALL_IMAGE = "game_synthriders_logo"

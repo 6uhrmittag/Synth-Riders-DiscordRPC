@@ -24,7 +24,7 @@ rpc_exe = EXE(
     rpc.datas,
     [],
     uac_admin=True,
-    name='Wuthering Waves RPC',
+    name='Synth Riders RPC',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

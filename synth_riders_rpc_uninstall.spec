@@ -24,7 +24,7 @@ uninstall_exe = EXE(
     uninstall.datas,
     [],
     uac_admin=True,
-    name='Uninstall Wuthering Waves RPC',
+    name='Uninstall Synth Riders RPC',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
