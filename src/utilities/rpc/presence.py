@@ -31,6 +31,7 @@ class Presence:
     life = 1.0
     lock = threading.Lock()
     connected = False
+    start_time = 0
 
     def __init__(self, config: dict) -> None:
         self.config = config
@@ -48,6 +49,8 @@ class Presence:
             self.logger.clear()
             self.connect_discord()
             self.start_websocket()
+
+            self.start_time = int(time.time())
             self.rpc_loop()
         except Exception as e:
             self.logger.error(f"An error occurred: {e}")
@@ -169,14 +172,16 @@ class Presence:
                     small_image=self.config.get("discord_application_logo_small"),
                     small_text=f"Mapped by {self.current_song['mapper']}",
                     # small_text=f"Life: {self.life*100:.0f}%",
-                    buttons=buttons
+                    buttons=buttons,
+                    start=self.start_time
                 )
             else:
                 self.presence.update(
                     details=None,
                     state="Browsing menus",
                     large_image=DiscordAssets.LARGE_IMAGE,
-                    buttons=buttons
+                    buttons=buttons,
+                    start=self.start_time
                 )
 
     def format_time(self, seconds):
