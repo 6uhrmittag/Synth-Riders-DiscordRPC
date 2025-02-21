@@ -1,14 +1,27 @@
 import os
+import re
+# from sqlite3 import Connection
+from time import sleep, time
+
+from psutil import NoSuchProcess, Process, pids
+from pypresence import Presence as PyPresence
+
+from config import Config
+from src.utilities.rpc import (
+    DiscordAssets,
+    Logger,
+#     get_database,
+#     get_game_version,
+#     get_player_region,
+#     get_player_union_level,
+)
+
+# required for Synth Riders
 import json
 import threading
 import time
-from time import sleep
-from websocket import WebSocketApp
-from pypresence import Presence as PyPresence
-from psutil import NoSuchProcess, Process, pids
 
-from config import Config
-from src.utilities.rpc import DiscordAssets, Logger
+from websocket import WebSocketApp
 
 class Presence:
     logger: Logger
@@ -26,10 +39,31 @@ class Presence:
     def __init__(self, config: dict) -> None:
         self.config = config
         self.logger = Logger()
+
+       #self.database_directory = os.path.join(
+       #    self.config["wuwa_install_location"],
+       #    "Wuthering Waves Game/Client/Saved/LocalStorage",
+       #)
+
+        # # If the user wants to access the database, get the database connection
+        # if self.config["database_access_preference"]:
+        #     local_storage = self.get_lastest_database_file(self.database_directory)
+        #     self.logger.info(f"Found last modified LocalStorage file: {local_storage}")
+        #     if local_storage:
+        #         database_path = os.path.join(self.database_directory, local_storage)
+        #         self.local_database = get_database(database_path)
+        #     else:
+        #         self.local_database = None
+        # else:
+        #     self.local_database = None
+
         self.presence = PyPresence(Config.APPLICATION_ID)
         self.ws_url = f"ws://{config.get('websocket_host', 'localhost')}:{config.get('websocket_port', 9000)}"
 
     def start(self) -> None:
+        """
+        Start the RPC
+        """
         try:
             self.logger.clear()
             self.connect_discord()
@@ -111,6 +145,9 @@ class Presence:
                     self.current_song = None
 
     def rpc_loop(self):
+        """
+        Loop to keep the RPC running
+        """
         while True:
             if not self.synth_riders_process_exists():
                 self.handle_game_exit()
@@ -167,6 +204,11 @@ class Presence:
             self.start()
 
     def synth_riders_process_exists(self):
+        """
+        Check whether the Wuthering Waves process is running
+
+        :return: True if the process is running, False otherwise
+        """
         for pid in pids():
             try:
                 if Process(pid).name() == Config.SYNTH_RIDERS_PROCESS_NAME:
