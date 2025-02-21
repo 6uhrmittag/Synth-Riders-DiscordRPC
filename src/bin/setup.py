@@ -80,6 +80,7 @@ def get_config(console: Console) -> dict:
     )
 
     config = {
+        "version": Config.VERSION,
         "synthriders_install_location": synthriders_install_location,
         "rich_presence_install_location": get_input(
             console,

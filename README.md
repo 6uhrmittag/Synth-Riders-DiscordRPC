@@ -55,8 +55,9 @@ You may delete the setup executable after installation
 
 1. Clone the repository
 2. Run `pip install -r requirements.txt`
-3. Run `build.bat`
-4. The executable will be located in the `dist/` directory
+3. Increase the version number in `config.py`
+4. Run `build.bat`
+5. The executable will be located in the `dist/` directory
 
 # Issues
 

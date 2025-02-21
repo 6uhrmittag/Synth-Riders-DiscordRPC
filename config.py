@@ -3,6 +3,7 @@ from os import getenv
 
 
 class Config:
+    VERSION = "1.0.0"
     MAIN_EXECUTABLE_NAME = "Synth Riders RPC.exe"
     UNINSTALL_EXECUTABLE_NAME = "Uninstall Synth Riders RPC.exe"
     APPLICATION_ID = "1342397301687189544"
