@@ -23,7 +23,7 @@ rpc_exe = EXE(
     rpc.binaries,
     rpc.datas,
     [],
-    uac_admin=True,
+    uac_admin=False,
     name='Synth Riders RPC',
     debug=False,
     bootloader_ignore_signals=False,
