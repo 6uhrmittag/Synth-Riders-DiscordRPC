@@ -5,6 +5,8 @@ import winreg
 from os import getenv, path, makedirs
 from shutil import copyfile
 from json import dumps
+from psutil import process_iter, NoSuchProcess, Process, AccessDenied, ZombieProcess
+from time import sleep, time
 from rich.console import Console
 from config import Config
 from src.utilities.rpc.assets import DiscordAssets
@@ -59,7 +61,7 @@ def print_welcome_message(console: Console) -> None:
         ASCII_ART,
         indent(
             "\n\n",
-            "[blue]Welcome! Please follow the instructions below to set up the program.[/blue]",
+            "[blue]Welcome![/blue] Please follow the instructions below to set up the program.",
             "Source code for this program can be found at https://github.com/6uhrmittag/Synth-Riders-DiscordRPC",
             "This tool is based on: https://github.com/xAkre/Wuthering-Waves-RPC",
             "[red]Please note that this program is not affiliated with Synth Riders or its developers.[/red]",
@@ -119,6 +121,72 @@ def get_config(console: Console) -> dict:
 
 
     return config
+
+
+def stop_running_process(console, process_name, timeout=5):
+    """
+    Stops all running instances of a process and its child processes before uninstalling.
+
+    :param console: The console to use for output.
+    :param process_name: The name of the executable to terminate.
+    :param timeout: Time (in seconds) to wait before force-killing the process.
+    """
+    found = False
+
+    def terminate_process_tree(process):
+        """ Recursively terminate a process and its child processes. """
+        try:
+            children = process.children(recursive=True)  # Get all child processes
+            for child in children:
+                console.print(
+                    indent(f"Stopping child process {child.name()} (PID: {child.pid})..."),
+                    style="yellow")
+                child.terminate()
+
+            process.terminate()  # Gracefully terminate the parent
+
+            # Wait for all processes to exit
+            for _ in range(timeout * 2):  # Check every 0.5s for `timeout` seconds
+                if not process.is_running():
+                    console.print(
+                        indent(f"{process.name()} (PID: {process.pid}) stopped."),
+                        style="green"
+                    )
+                    return
+                sleep(0.5)
+
+            # Force kill if still running
+            console.print(
+                indent(f"{process.name()} (PID: {process.pid}) did not terminate in time, forcing shutdown..."),
+                style="red"
+            )
+            process.kill()
+
+            for child in children:  # Ensure child processes are also killed
+                if child.is_running():
+                    child.kill()
+
+            console.print(
+                indent(f"{process.name()} forcefully stopped."),
+                style="green"
+                )
+
+        except (NoSuchProcess, AccessDenied, ZombieProcess):
+            pass
+
+    for process in process_iter(attrs=["pid", "name"]):
+        try:
+            if process.info["name"].lower() == process_name.lower():
+                found = True
+                console.print(
+                    indent(f"{process_name} is running! Stopping {process_name} (PID: {process.info['pid']})..."),
+                    style="yellow",
+                )
+                terminate_process_tree(Process(process.info["pid"]))
+
+        except (NoSuchProcess, AccessDenied, ZombieProcess):
+            continue
+
 
 
 def create_config_folder(console: Console, config: dict) -> None:
@@ -396,6 +464,7 @@ def create_windows_shortcut(console: Console, config: dict) -> None:
 
 
 print_welcome_message(console)
+stop_running_process(console, Config.MAIN_EXECUTABLE_NAME, timeout=5)
 config = get_config(console)
 print_divider(console, "[green]Options Finalised[/green]", "green")
 create_config_folder(console, config)

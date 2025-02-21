@@ -1,7 +1,9 @@
 import sys
 import subprocess
 import os
+from time import sleep, time
 import tempfile
+from psutil import process_iter, NoSuchProcess, Process, AccessDenied, ZombieProcess
 from shutil import rmtree
 from win32com.client import Dispatch
 import winreg
@@ -32,6 +34,71 @@ with open(config_path, "r") as f:
                 "The rich presence install location in the config file does not match the actual install location. Please update the config file, or setup the RPC again"
             ),
         )
+
+
+def stop_running_process(console, process_name, timeout=5):
+    """
+    Stops all running instances of a process and its child processes before uninstalling.
+
+    :param console: The console to use for output.
+    :param process_name: The name of the executable to terminate.
+    :param timeout: Time (in seconds) to wait before force-killing the process.
+    """
+    found = False
+
+    def terminate_process_tree(process):
+        """ Recursively terminate a process and its child processes. """
+        try:
+            children = process.children(recursive=True)  # Get all child processes
+            for child in children:
+                console.print(
+                    indent(f"Stopping child process {child.name()} (PID: {child.pid})..."),
+                    style="yellow")
+                child.terminate()
+
+            process.terminate()  # Gracefully terminate the parent
+
+            # Wait for all processes to exit
+            for _ in range(timeout * 2):  # Check every 0.5s for `timeout` seconds
+                if not process.is_running():
+                    console.print(
+                        indent(f"{process.name()} (PID: {process.pid}) stopped."),
+                        style="green"
+                    )
+                    return
+                sleep(0.5)
+
+            # Force kill if still running
+            console.print(
+                indent(f"{process.name()} (PID: {process.pid}) did not terminate in time, forcing shutdown..."),
+                style="red"
+            )
+            process.kill()
+
+            for child in children:  # Ensure child processes are also killed
+                if child.is_running():
+                    child.kill()
+
+            console.print(
+                indent(f"{process.name()} forcefully stopped."),
+                style="green"
+                )
+
+        except (NoSuchProcess, AccessDenied, ZombieProcess):
+            pass
+
+    for process in process_iter(attrs=["pid", "name"]):
+        try:
+            if process.info["name"].lower() == process_name.lower():
+                found = True
+                console.print(
+                    indent(f"{process_name} is running! Stopping {process_name} (PID: {process.info['pid']})..."),
+                    style="yellow",
+                )
+                terminate_process_tree(Process(process.info["pid"]))
+
+        except (NoSuchProcess, AccessDenied, ZombieProcess):
+            continue
 
 
 def remove_startup_task_old(console: Console):
@@ -223,6 +290,7 @@ print_divider(console, "Synth Riders Waves Rich Presence Uninstaller", "white")
 console.input(indent("Press Enter to uninstall the Synth Riders Rich Presence..."))
 
 try:
+    stop_running_process(console, Config.MAIN_EXECUTABLE_NAME)
     if config["startup_preference"]:
         print_divider(
             console,
