@@ -4,6 +4,7 @@ import os
 import tempfile
 from shutil import rmtree
 from win32com.client import Dispatch
+import winreg
 from os.path import exists, join, abspath, dirname, normcase, normpath, expanduser
 from json import loads
 from rich.console import Console
@@ -33,7 +34,7 @@ with open(config_path, "r") as f:
         )
 
 
-def remove_startup_task(console: Console):
+def remove_startup_task_old(console: Console):
     """
     Remove the startup task that was created during installation
 
@@ -63,6 +64,30 @@ def remove_startup_task(console: Console):
             ),
             style="red",
         )
+
+
+def remove_startup_task(console: Console):
+    """
+    Remove the startup registry key that was created during installation.
+
+    :param console: The console to use for output.
+    """
+    try:
+        with console.status(indent("Removing the startup entry..."), spinner="dots"):
+            key = winreg.HKEY_CURRENT_USER
+            subkey = r"Software\Microsoft\Windows\CurrentVersion\Run"
+            app_name = "SynthRidersRPC"
+
+            with winreg.OpenKey(key, subkey, 0, winreg.KEY_SET_VALUE) as reg_key:
+                winreg.DeleteValue(reg_key, app_name)
+
+            console.print(indent("Startup entry removed."), style="green")
+
+    except FileNotFoundError:
+        console.print(indent("Startup entry not found, nothing to remove."), style="yellow")
+    except Exception as e:
+        console.print(indent("Failed to remove the startup entry."), style="red")
+        console.print_exception()
 
 
 def get_shortcut_target_path(shortcut_path: str) -> str:
@@ -201,7 +226,7 @@ try:
     if config["startup_preference"]:
         print_divider(
             console,
-            "[green]Removing Synth Riders RPC from Windows Task Scheduler[/green]",
+            "[green]Removing Synth Riders RPC startup task[/green]",
             "green",
         )
         remove_startup_task(console)

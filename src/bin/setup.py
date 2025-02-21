@@ -1,6 +1,7 @@
 import sys
 import subprocess
 from win32com.client import Dispatch
+import winreg
 from os import getenv, path, makedirs
 from shutil import copyfile
 from json import dumps
@@ -336,6 +337,33 @@ def launch_exe_on_startup(console: Console, config: dict) -> None:
         console.print(indent("Setup will continue..."))
 
 
+def add_to_startup_registry(console, config):
+    """
+    Adds the executable to Windows startup via the Registry (without admin rights).
+
+    :param console: The console to use for output
+    :param config: The configuration options
+    """
+    try:
+        with console.status("Adding application to startup via registry...", spinner="dots"):
+            shortcut_target = path.join(
+                config["rich_presence_install_location"],
+                Config.MAIN_EXECUTABLE_NAME,
+            )
+
+            key = winreg.HKEY_CURRENT_USER
+            subkey = r"Software\Microsoft\Windows\CurrentVersion\Run"
+            app_name = "SynthRidersRPC"
+
+            with winreg.OpenKey(key, subkey, 0, winreg.KEY_SET_VALUE) as reg_key:
+                winreg.SetValueEx(reg_key, app_name, 0, winreg.REG_SZ, f'"{shortcut_target}"')
+
+            console.print("Executable successfully added to startup (Registry, no admin needed)", style="green")
+
+    except Exception as e:
+        console.print("Failed to add application to startup (Registry).", style="red")
+        console.print_exception()
+
 def create_windows_shortcut(console: Console, config: dict) -> None:
     """
     Create a desktop shortcut for the executable
@@ -376,7 +404,8 @@ copy_main_exe_to_install_location(console, config)
 copy_uninstall_exe_to_install_location(console, config)
 add_exe_to_windows_apps(console, config)
 if config["startup_preference"]:
-    launch_exe_on_startup(console, config)
+    add_to_startup_registry(console, config)
+    # launch_exe_on_startup(console, config)
 if config["shortcut_preference"]:
     create_windows_shortcut(console, config)
 print_divider(console, "[green]Setup Completed[/green]", "green")
