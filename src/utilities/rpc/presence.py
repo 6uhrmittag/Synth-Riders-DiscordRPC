@@ -130,7 +130,7 @@ class Presence:
                 time_str = self.format_time(self.song_progress)
                 length_str = self.format_time(self.song_length)
 
-                details = f"Playing SynthRiders {self.current_song['title']} by {self.current_song['artist']}"
+                details = f"In Synth Riders: {self.current_song['title']} by {self.current_song['artist']}"
                 state = (f"{self.current_song['difficulty']} | "
                         f"{time_str}/{length_str} | "
                         f"Score: {self.score:,} | "
@@ -139,15 +139,18 @@ class Presence:
                 self.presence.update(
                     details=details,
                     state=state,
-                    #large_image=DiscordAssets.LARGE_IMAGE,
-                    large_text=f"Mapped by {self.current_song['mapper']}",
-                    #small_image=DiscordAssets.SMALL_IMAGE,
-                    #small_text=f"Life: {self.life*100:.0f}%",
+                    large_image=DiscordAssets.LARGE_IMAGE,
+                    large_text=f"Playing Synth Riders VR",
+                    # large_text=f"Playing Synth RidersMapped by {self.current_song['mapper']}",
+                    small_image=DiscordAssets.SMALL_IMAGE,
+                    small_text=f"Mapped by {self.current_song['mapper']}",
+                    # small_text=f"Life: {self.life*100:.0f}%",
                     buttons=buttons
                 )
             else:
                 self.presence.update(
-                    details="In menus",
+                    details="Playing Synth Riders VR",
+                    state="In menus",
                     large_image=DiscordAssets.LARGE_IMAGE,
                     buttons=buttons
                 )
