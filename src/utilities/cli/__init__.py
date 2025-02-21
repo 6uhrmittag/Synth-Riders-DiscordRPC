@@ -5,10 +5,8 @@ from .input import (
     get_boolean_input,
     get_startup_preference,
     get_shortcut_preference,
-    get_database_access_preference,
     get_rich_presence_install_location,
     get_synthriders_install_location,
     get_promote_preference,
     get_keep_running_preference,
-    get_kuro_games_uid,
 )

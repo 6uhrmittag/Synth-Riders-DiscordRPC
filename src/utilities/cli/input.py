@@ -66,23 +66,6 @@ def get_synthriders_install_location(console: Console, default_location: str) ->
         )
 
 
-def get_database_access_preference(console: Console) -> bool:
-    """
-    Get the user's preference for accessing the game's local database
-
-    :param console: The console to use for input and output
-    :return: The user's preference for accessing the game's local database
-    """
-    return get_boolean_input(
-        console,
-        indent(
-            "Would you like the rich presence to get data from the game's local database?",
-            "Without this selected, union level and region data will not be displayed.",
-            "[red]If you choose yes, I am not responsible for any issues and/or bans that may arise.[/red] (Y/N): ",
-        ),
-    )
-
-
 def get_rich_presence_install_location(console: Console, default_location: str) -> str:
     """
     Get the rich presence install location from the user

@@ -10,7 +10,6 @@ from src.utilities.cli import (
     indent,
     print_divider,
     fatal_error,
-    get_database_access_preference,
     get_input,
     get_rich_presence_install_location,
     get_shortcut_preference,
@@ -18,7 +17,6 @@ from src.utilities.cli import (
     get_startup_preference,
     get_promote_preference,
     get_keep_running_preference,
-    get_kuro_games_uid,
 )
 
 console = Console()
@@ -79,22 +77,9 @@ def get_config(console: Console) -> dict:
         "WSynth Riders Install Location",
         lambda: get_synthriders_install_location(console, DEFAULT_SYNTHRIDERS_INSTALL_LOCATION),
     )
-    database_access_preference = get_input(
-        console,
-        "Database Access Preference",
-        lambda: get_database_access_preference(console),
-    )
-
-    if database_access_preference:
-        kuro_games_uid = get_input(
-            console,
-            "Kuro Games UID",
-            lambda: get_kuro_games_uid(console),
-        )
 
     config = {
         "synthriders_install_location": synthriders_install_location,
-        "database_access_preference": database_access_preference,
         "rich_presence_install_location": get_input(
             console,
             "Rich Presence Install Location",
@@ -124,8 +109,6 @@ def get_config(console: Console) -> dict:
         ),
     }
 
-    if database_access_preference:
-        config["kuro_games_uid"] = kuro_games_uid
 
     return config
 
