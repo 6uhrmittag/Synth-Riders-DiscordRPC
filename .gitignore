@@ -1,6 +1,10 @@
 .venv
+venv
+
 __pycache__
 logs
 dist
 build
 .vscode
+
+.idea
