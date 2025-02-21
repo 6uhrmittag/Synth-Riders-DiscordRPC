@@ -8,14 +8,16 @@
 Enables Discord Rich Presence for Synth Riders
 <div style="display: flex; flex-direction: column; gap: 10px">
     <div style="width: 100%; display: flex; gap: 10px; justify-content: center;">
-        <img src="screenshots/light-db.png" style="width: 45%; height: 50%">
-        <img src="screenshots/dark-db.png" style="width: 45%; height: 50%">
+        <img src="screenshots/small_in_menu.png" style="width: 45%; height: 50%">
+        <img src="screenshots/small_playing_takeover.png" style="width: 45%; height: 50%">
     </div>
     <div style="width: 100%; display: flex; gap: 10px; justify-content: center;">
-        <img src="screenshots/dark-no-db.png"   style="width: 45%; height: 50%">
-        <img src="screenshots/light-no-db.png" style="width: 45%; height: 50%">
+        <img src="screenshots/wide_playing_underground.png"   style="width: 45%; height: 50%">
+        <img src="screenshots/wide_playing_takeover.png" style="width: 45%; height: 50%">
     </div>
 </div>
+
+> This Project is not affiliated with Synth Riders or its developers
 
 ## Table of Contents
 
@@ -30,17 +32,15 @@ Enables Discord Rich Presence for Synth Riders
 
 ## Features
 
-- Detailed Discord RPC based on the output of https://github.com/bookdude13/SynthRiders-Websockets-Mod 
+- Detailed Discord RPC based on the output of https://github.com/bookdude13/SynthRiders-Websockets-Mod
 - Automatic launch on startup
-  - Allows the RPC application to start automatically when the user logs in, removing the need to manually start the application
+    - Allows the RPC application to start automatically when the user logs in, removing the need to manually start the application
 
 ## Installing
 
 1. Install the [Synth Riders Websockets Mod](https://github.com/bookdude13/SynthRiders-Websockets-Mod)
-   1. (For instructions see the mod's README.md).
-2. Download the [latest release](
-    https://github.com/6uhrmittag/Synth-Riders-DiscordRPC/releases/latest
-) 
+    1. (For instructions see the mod's README.md).
+2. Download the [latest release](https://github.com/6uhrmittag/Synth-Riders-DiscordRPC/releases/latest)
 3. Run the setup executable
 4. Go through the setup process
 5. You're done!
