@@ -112,7 +112,7 @@ class Presence:
                 self.logger.info(f"Current song data: {self.current_song}")
 
 
-            elif event_type == "SongEnd":
+            elif event_type == "SongEnd" or event_type == "ReturnToMenu":
                 self.current_song = None
                 self.song_progress = 0
 
