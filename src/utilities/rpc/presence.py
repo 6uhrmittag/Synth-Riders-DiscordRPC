@@ -37,8 +37,8 @@ class Presence:
         self.logger = Logger()
 
 
-        self.presence = PyPresence(Config.APPLICATION_ID)
-        self.ws_url = f"ws://{config.get('websocket_host', 'localhost')}:{config.get('websocket_port', 9000)}"
+        self.presence = PyPresence(self.config.get("discord_application_id"))
+        self.ws_url = f"ws://{self.config.get("synthriders_websocket_host")}:{self.config.get("synthriders_websocket_port")}"
 
     def start(self) -> None:
         """
@@ -156,10 +156,10 @@ class Presence:
                 self.presence.update(
                     details=details,
                     state=state,
-                    large_image=DiscordAssets.LARGE_IMAGE,
+                    large_image=self.config.get("discord_application_logo_large"),
                     large_text=f"Playing Synth Riders VR",
                     # large_text=f"Playing Synth RidersMapped by {self.current_song['mapper']}",
-                    small_image=DiscordAssets.SMALL_IMAGE,
+                    small_image=self.config.get("discord_application_logo_small"),
                     small_text=f"Mapped by {self.current_song['mapper']}",
                     # small_text=f"Life: {self.life*100:.0f}%",
                     buttons=buttons

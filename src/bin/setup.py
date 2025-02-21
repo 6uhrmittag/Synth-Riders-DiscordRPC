@@ -6,6 +6,7 @@ from shutil import copyfile
 from json import dumps
 from rich.console import Console
 from config import Config
+from src.utilities.rpc.assets import DiscordAssets
 from src.utilities.cli import (
     indent,
     print_divider,
@@ -107,6 +108,11 @@ def get_config(console: Console) -> dict:
             "Promote Preference",
             lambda: get_promote_preference(console),
         ),
+        "discord_application_id": Config.APPLICATION_ID,
+        "discord_application_logo_large": DiscordAssets.LARGE_IMAGE,
+        "discord_application_logo_small": DiscordAssets.SMALL_IMAGE,
+        "synthriders_websocket_host": Config.WEBSOCKET_HOST,
+        "synthriders_websocket_port": Config.WEBSOCKET_PORT,
     }
 
 
