@@ -51,6 +51,15 @@ You may delete the setup executable after installation
 
 1. Simply run the RPC application like any other program
 
+### Advanced configuration
+
+The configuration file is located at `%localappdata%\Synth Riders DiscordRPC\config\config.json`
+
+See the code for details on what each setting does:
+
+- `config.py`
+- `src\utilities\rpc\assets.py`
+
 ## Building from source
 
 1. Clone the repository
