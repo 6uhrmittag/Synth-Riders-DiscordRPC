@@ -117,6 +117,7 @@ def get_config(console: Console) -> dict:
         "discord_application_logo_small": DiscordAssets.SMALL_IMAGE,
         "synthriders_websocket_host": Config.WEBSOCKET_HOST,
         "synthriders_websocket_port": Config.WEBSOCKET_PORT,
+        "image_upload_url": Config.IMAGE_UPLOAD_URL,
     }
 
 

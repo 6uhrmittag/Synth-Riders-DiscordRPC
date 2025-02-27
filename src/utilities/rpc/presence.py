@@ -19,6 +19,12 @@ import time
 
 from websocket import WebSocketApp
 
+# required for image upload
+import requests
+import base64
+import tempfile
+
+
 class Presence:
     logger: Logger
     presence: PyPresence
@@ -92,6 +98,46 @@ class Presence:
         ws_thread.daemon = True
         ws_thread.start()
 
+    def upload_base64_image(self, upload_url: str, base64_string: str) -> str:
+        # Extract the base64 part from the data URL
+        match = re.match(r'data:image/\w+;base64,(.*)', base64_string)
+        if not match:
+            self.logger.error("Invalid base64 image format")
+            raise ValueError("Invalid base64 image format")
+
+        image_data = base64.b64decode(match.group(1))
+
+        # Create a temporary file to store the image
+        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as temp_file:
+            temp_file.write(image_data)
+            temp_file_path = temp_file.name
+
+        # Upload
+        url = self.config.get("image_upload_url")
+        with open(temp_file_path, "rb") as image_file:
+            response = requests.post(url, files={"files[]": image_file})
+            self.logger.info(f"Upload response: {response.text}")
+
+        # Remove the temporary file after upload
+        try:
+            os.remove(temp_file_path)
+        except OSError:
+            self.logger.error("Failed to remove temporary file")
+            pass
+
+        # Parse and return the URL from response
+        if response.status_code == 200:
+            try:
+                self.logger.info(f"Upload response: {response.json()}")
+                return response.json()["files"][0]["url"]
+            except (KeyError, IndexError):
+                self.logger.error(f"Unexpected response format: {response.text}")
+                raise ValueError("Unexpected response format")
+        else:
+            self.logger.error(f"Unexpected response format: {response.text}")
+            raise ValueError(f"Upload failed with status code {response.status_code}: {response.text}")
+
+
     def handle_websocket_event(self, data):
         event_type = data.get("eventType")
         event_data = data.get("data", {})
@@ -113,6 +159,9 @@ class Presence:
                 self.life = 1.0
 
                 self.logger.info(f"Current song data: {self.current_song}")
+
+                # upload albumArt
+                self.current_song["albumUrl"] = self.upload_base64_image(event_data.get("albumArt")) or None
 
 
             elif event_type == "SongEnd" or event_type == "ReturnToMenu":
@@ -166,7 +215,7 @@ class Presence:
                 self.presence.update(
                     details=details,
                     state=state,
-                    large_image=self.config.get("discord_application_logo_large"),
+                    large_image=self.current_song['albumUrl'] or self.config.get("discord_application_logo_large"),
                     #large_text=f"Playing Synth Riders VR",
                     large_text=f"Mapped by {self.current_song['mapper']}",
                     small_image=self.config.get("discord_application_logo_small"),

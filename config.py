@@ -3,7 +3,7 @@ from os import getenv
 
 
 class Config:
-    VERSION = "1.0.0"
+    VERSION = "1.1.0"
     MAIN_EXECUTABLE_NAME = "Synth Riders DiscordRPC.exe"
     UNINSTALL_EXECUTABLE_NAME = "Uninstall Synth Riders DiscordRPC.exe"
     # APPLICATION_ID = "1342397301687189544" # Custom App for this project; can use custom images uploaded to the App
@@ -11,3 +11,4 @@ class Config:
     SYNTH_RIDERS_PROCESS_NAME = "SynthRiders.exe"
     WEBSOCKET_HOST = "localhost"
     WEBSOCKET_PORT = "9000"
+    IMAGE_UPLOAD_URL = "https://uguu.se/upload"

@@ -8,12 +8,11 @@
 Enables Discord Rich Presence for Synth Riders
 <div style="display: flex; flex-direction: column; gap: 10px">
     <div style="width: 100%; display: flex; gap: 10px; justify-content: center;">
-        <img src="screenshots/small_in_menu.png" style="width: 45%; height: 50%">
-        <img src="screenshots/small_playing_takeover.png" style="width: 45%; height: 50%">
+        <img src="screenshots/small1_underground.png" style="width: 45%; height: 50%">
+        <img src="screenshots/small2_shelter.png" style="width: 45%; height: 50%">
     </div>
     <div style="width: 100%; display: flex; gap: 10px; justify-content: center;">
-        <img src="screenshots/wide_playing_underground.png"   style="width: 45%; height: 50%">
-        <img src="screenshots/wide_playing_takeover.png" style="width: 45%; height: 50%">
+        <img src="screenshots/wide1_underground.png"   style="width: 45%; height: 50%">
     </div>
 </div>
 
@@ -33,6 +32,7 @@ Enables Discord Rich Presence for Synth Riders
 ## Features
 
 - Detailed Discord RPC based on the output of https://github.com/bookdude13/SynthRiders-Websockets-Mod
+- Show Album Artwork of the currently playing song
 - Automatic launch on startup
     - Allows the RPC application to start automatically when the user logs in, removing the need to manually start the application
 
@@ -60,6 +60,14 @@ See the code for details on what each setting does:
 - `config.py`
 - `src\utilities\rpc\assets.py`
 
+### Album Artwork Upload
+
+To show the current song's album artwork in Discord, it's uploaded to the temporary file hosting: [uguu.se](https://uguu.se/)  
+The artwork used is the one provided by the Synth Riders Websockets Mod; this way it works with all maps that have artwork.
+
+The upload-url can be changed in the configuration file; it should work with all [uguu](https://github.com/topics/uguu) and [pomf-based](https://github.com/topics/pomf) file hosting services.  
+The covers are usually around 100-500kb in size, and they get deleted after 3h - so minimal overhead.
+
 ## Building from source
 
 1. Clone the repository
@@ -79,4 +87,5 @@ This is a third-party application and is not affiliated with Synth Riders or its
 # Credits
 
 - This tool is based on the work of [https://github.com/xAkre/Wuthering-Waves-RPC](https://github.com/xAkre/Wuthering-Waves-RPC)<3
+- Temporary Filehosting used to upload the artwork: https://uguu.se/ 🥰
 
