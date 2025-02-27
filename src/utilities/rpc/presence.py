@@ -113,9 +113,8 @@ class Presence:
             temp_file_path = temp_file.name
 
         # Upload
-        url = self.config.get("image_upload_url")
         with open(temp_file_path, "rb") as image_file:
-            response = requests.post(url, files={"files[]": image_file})
+            response = requests.post(upload_url, files={"files[]": image_file})
             self.logger.info(f"Upload response: {response.text}")
 
         # Remove the temporary file after upload
@@ -161,7 +160,7 @@ class Presence:
                 self.logger.info(f"Current song data: {self.current_song}")
 
                 # upload albumArt
-                self.current_song["albumUrl"] = self.upload_base64_image(event_data.get("albumArt")) or None
+                self.current_song["albumUrl"] = self.upload_base64_image(self.config.get("image_upload_url"), event_data.get("albumArt")) or None
 
 
             elif event_type == "SongEnd" or event_type == "ReturnToMenu":
