@@ -24,6 +24,9 @@ import requests
 import base64
 import tempfile
 
+# required for notifications
+from plyer import notification
+
 
 class Presence:
     logger: Logger
@@ -38,6 +41,8 @@ class Presence:
     lock = threading.Lock()
     connected = False
     start_time = 0
+    first_connection = True  # Track if this is the first WebSocket connection
+    first_song_played = False  # Track if this is the first song played
 
     def __init__(self, config: dict) -> None:
         self.config = config
@@ -46,6 +51,23 @@ class Presence:
 
         self.presence = PyPresence(self.config.get("discord_application_id"))
         self.ws_url = f"ws://{self.config.get("synthriders_websocket_host")}:{self.config.get("synthriders_websocket_port")}"
+
+    def show_notification(self, title: str, message: str) -> None:
+        """
+        Show a desktop notification
+        
+        :param title: The notification title
+        :param message: The notification message
+        """
+        try:
+            notification.notify(
+                title=title,
+                message=message,
+                app_name="Synth Riders DiscordRPC",
+                timeout=5  # Show for 5 seconds
+            )
+        except Exception as e:
+            self.logger.error(f"Failed to show notification: {e}")
 
     def start(self) -> None:
         """
@@ -81,6 +103,14 @@ class Presence:
         def on_open(ws):
             self.logger.info("Connected to SynthRiders WebSocket")
             self.connected = True
+            
+            # Show notification when WebSocket is ready
+            if self.first_connection:
+                self.show_notification(
+                    "Synth Riders DiscordRPC Ready",
+                    "Connected to SynthRiders WebSocket. Discord status will update when you play!"
+                )
+                self.first_connection = False
 
         def on_close(ws, close_status_code, close_msg):
             self.logger.info("WebSocket connection closed")
@@ -158,6 +188,14 @@ class Presence:
                 self.life = 1.0
 
                 self.logger.info(f"Current song data: {self.current_song}")
+
+                # Show notification on first song to confirm everything is working
+                if not self.first_song_played:
+                    self.show_notification(
+                        "Discord Status Active",
+                        f"Now playing: {self.current_song['title']} by {self.current_song['artist']}"
+                    )
+                    self.first_song_played = True
 
                 # upload albumArt
                 self.current_song["albumUrl"] = self.upload_base64_image(self.config.get("image_upload_url"), event_data.get("albumArt")) or None
