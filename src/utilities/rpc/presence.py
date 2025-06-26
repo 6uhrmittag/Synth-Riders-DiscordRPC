@@ -38,11 +38,13 @@ class Presence:
     lock = threading.Lock()
     connected = False
     start_time = 0
+    running = True  # Add flag for external shutdown control
+    update_cycle = 15  # Configurable update cycle
 
     def __init__(self, config: dict) -> None:
         self.config = config
         self.logger = Logger()
-
+        self.update_cycle = config.get("update_cycle", 15)  # Get from config or default to 15
 
         self.presence = PyPresence(self.config.get("discord_application_id"))
         self.ws_url = f"ws://{self.config.get("synthriders_websocket_host")}:{self.config.get("synthriders_websocket_port")}"
@@ -186,13 +188,13 @@ class Presence:
         """
         Loop to keep the RPC running
         """
-        while True:
+        while self.running:
             if not self.synth_riders_process_exists():
                 self.handle_game_exit()
                 break
 
             self.update_presence()
-            sleep(15)
+            sleep(self.update_cycle)
 
     def update_presence(self):
         buttons = [{
@@ -242,6 +244,17 @@ class Presence:
             while not self.synth_riders_process_exists():
                 sleep(5)
             self.start()
+
+    def stop(self):
+        """
+        Stop the RPC gracefully
+        """
+        self.running = False
+        try:
+            self.presence.clear()
+            self.presence.close()
+        except:
+            pass
 
     def synth_riders_process_exists(self):
         """
