@@ -1,4 +1,4 @@
-name: CI
+name: Windows Test
 
 on:
   push:
@@ -11,10 +11,11 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python-version: [ 3.13, 3.12 ]
+        python-version: [3.11, 3.12, 3.13]
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
@@ -36,3 +37,11 @@ jobs:
         run: |
           flake8 src/ --count --select=E9,F63,F7,F82 --show-source --statistics
           flake8 src/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+      - name: Check code formatting with Black
+        run: |
+          black --check src/
+
+      - name: Type check with mypy
+        run: |
+          mypy src/
