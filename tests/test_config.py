@@ -19,12 +19,12 @@ class TestConfig:
         assert hasattr(Config, 'IMAGE_UPLOAD_URL')
 
     def test_config_file_write_read(self):
-        """Test writing and reading a config file"""
+        """Test writing and reading a config file using production config"""
         # Create a temporary directory
         with tempfile.TemporaryDirectory() as temp_dir:
             config_path = os.path.join(temp_dir, "config.json")
             
-            # Sample config data
+            # Use production config values
             config_data = {
                 "version": Config.VERSION,
                 "synthriders_install_location": "C:\\Games\\SynthRiders",
