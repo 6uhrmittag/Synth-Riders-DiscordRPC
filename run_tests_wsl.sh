@@ -23,23 +23,27 @@ pip install pytest flake8 black mypy
 echo "Creating mock modules for Windows-specific dependencies..."
 mkdir -p mock_modules
 
-# Create mock win32com module
-cat > mock_modules/win32com.py << 'EOF'
-# Mock pywin32 module
-class client:
-    class Dispatch:
-        def __init__(self, *args, **kwargs):
-            pass
-        
-        def CreateShortcut(self, *args, **kwargs):
-            class MockShortcut:
-                def __init__(self):
-                    self.TargetPath = ''
-                
-                def Save(self):
-                    pass
-            
-            return MockShortcut()
+# Create mock win32com package
+mkdir -p mock_modules/win32com
+cat > mock_modules/win32com/__init__.py << 'EOF'
+# Mock win32com package
+EOF
+
+cat > mock_modules/win32com/client.py << 'EOF'
+# Mock win32com.client module
+class Dispatch:
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def CreateShortcut(self, *args, **kwargs):
+        class MockShortcut:
+            def __init__(self):
+                self.TargetPath = ''
+
+            def Save(self):
+                pass
+
+        return MockShortcut()
 EOF
 
 # Create mock winreg module
@@ -53,10 +57,10 @@ def OpenKey(*args, **kwargs):
     class MockKey:
         def __enter__(self):
             return self
-        
+
         def __exit__(self, *args):
             pass
-    
+
     return MockKey()
 
 def SetValueEx(*args, **kwargs):
