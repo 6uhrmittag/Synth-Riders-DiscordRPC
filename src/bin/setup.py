@@ -464,23 +464,24 @@ def create_windows_shortcut(console: Console, config: dict) -> None:
         console.print(indent("Setup will continue..."))
 
 
-print_welcome_message(console)
-stop_running_process(console, Config.MAIN_EXECUTABLE_NAME, timeout=5)
-config = get_config(console)
-print_divider(console, "[green]Options Finalised[/green]", "green")
-create_config_folder(console, config)
-write_config_to_file(console, config)
-copy_main_exe_to_install_location(console, config)
-copy_uninstall_exe_to_install_location(console, config)
-add_exe_to_windows_apps(console, config)
-if config["startup_preference"]:
-    add_to_startup_registry(console, config)
-    # launch_exe_on_startup(console, config)
-if config["shortcut_preference"]:
-    create_windows_shortcut(console, config)
-print_divider(console, "[green]Setup Completed[/green]", "green")
-console.show_cursor(False)
+if __name__ == "__main__":
+    print_welcome_message(console)
+    stop_running_process(console, Config.MAIN_EXECUTABLE_NAME, timeout=5)
+    config = get_config(console)
+    print_divider(console, "[green]Options Finalised[/green]", "green")
+    create_config_folder(console, config)
+    write_config_to_file(console, config)
+    copy_main_exe_to_install_location(console, config)
+    copy_uninstall_exe_to_install_location(console, config)
+    add_exe_to_windows_apps(console, config)
+    if config["startup_preference"]:
+        add_to_startup_registry(console, config)
+        # launch_exe_on_startup(console, config)
+    if config["shortcut_preference"]:
+        create_windows_shortcut(console, config)
+    print_divider(console, "[green]Setup Completed[/green]", "green")
+    console.show_cursor(False)
 
-# For some reason using console.input() here doesn't work, so I'm using input() instead
-input(indent("Press Enter to exit..."))
-exit(0)
+    # For some reason using console.input() here doesn't work, so I'm using input() instead
+    input(indent("Press Enter to exit..."))
+    exit(0)
