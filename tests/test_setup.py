@@ -123,3 +123,7 @@ class TestSetup:
         assert config["synthriders_websocket_host"] == Config.WEBSOCKET_HOST
         assert config["synthriders_websocket_port"] == Config.WEBSOCKET_PORT
         assert config["image_upload_url"] == Config.IMAGE_UPLOAD_URL
+
+def test_dummy():
+    """Basic test to ensure setup module is accessible."""
+    assert True
