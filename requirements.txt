@@ -5,3 +5,4 @@ rich
 pywin32
 websocket-client
 requests
+plyer
