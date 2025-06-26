@@ -1,5 +1,6 @@
 import os
 import re
+
 # from sqlite3 import Connection
 from time import sleep, time
 
@@ -42,7 +43,6 @@ class Presence:
     def __init__(self, config: dict) -> None:
         self.config = config
         self.logger = Logger()
-
 
         self.presence = PyPresence(self.config.get("discord_application_id"))
         self.ws_url = f"ws://{self.config.get('synthriders_websocket_host')}:{self.config.get('synthriders_websocket_port')}"
@@ -89,10 +89,9 @@ class Presence:
                 sleep(5)
                 self.start_websocket()
 
-        self.ws = WebSocketApp(self.ws_url,
-                             on_message=on_message,
-                             on_open=on_open,
-                             on_close=on_close)
+        self.ws = WebSocketApp(
+            self.ws_url, on_message=on_message, on_open=on_open, on_close=on_close
+        )
 
         ws_thread = threading.Thread(target=self.ws.run_forever)
         ws_thread.daemon = True
@@ -100,7 +99,7 @@ class Presence:
 
     def upload_base64_image(self, upload_url: str, base64_string: str) -> str:
         # Extract the base64 part from the data URL
-        match = re.match(r'data:image/\w+;base64,(.*)', base64_string)
+        match = re.match(r"data:image/\w+;base64,(.*)", base64_string)
         if not match:
             self.logger.error("Invalid base64 image format")
             raise ValueError("Invalid base64 image format")
@@ -134,8 +133,9 @@ class Presence:
                 raise ValueError("Unexpected response format")
         else:
             self.logger.error(f"Unexpected response format: {response.text}")
-            raise ValueError(f"Upload failed with status code {response.status_code}: {response.text}")
-
+            raise ValueError(
+                f"Upload failed with status code {response.status_code}: {response.text}"
+            )
 
     def handle_websocket_event(self, data):
         event_type = data.get("eventType")
@@ -149,7 +149,7 @@ class Presence:
                     "difficulty": event_data.get("difficulty", "Unknown"),
                     "mapper": event_data.get("beatMapper", "Unknown Mapper"),
                     "length": event_data.get("length", 0),
-                    "albumArt": event_data.get("albumArt", None)
+                    "albumArt": event_data.get("albumArt", None),
                 }
                 self.song_length = self.current_song["length"]
                 self.song_progress = 0
@@ -160,8 +160,12 @@ class Presence:
                 self.logger.info(f"Current song data: {self.current_song}")
 
                 # upload albumArt
-                self.current_song["albumUrl"] = self.upload_base64_image(self.config.get("image_upload_url"), event_data.get("albumArt")) or None
-
+                self.current_song["albumUrl"] = (
+                    self.upload_base64_image(
+                        self.config.get("image_upload_url"), event_data.get("albumArt")
+                    )
+                    or None
+                )
 
             elif event_type == "SongEnd" or event_type == "ReturnToMenu":
                 self.current_song = None
@@ -179,9 +183,6 @@ class Presence:
                 if event_data.get("sceneName") == "3.GameEnd":
                     self.current_song = None
 
-
-
-
     def rpc_loop(self):
         """
         Loop to keep the RPC running
@@ -195,33 +196,44 @@ class Presence:
             sleep(15)
 
     def update_presence(self):
-        buttons = [{
-            "label": "Want this status too?",
-            "url": "https://github.com/6uhrmittag/Synth-Riders-DiscordRPC"
-        }] if self.config.get("promote_preference") else None
+        buttons = (
+            [
+                {
+                    "label": "Want this status too?",
+                    "url": "https://github.com/6uhrmittag/Synth-Riders-DiscordRPC",
+                }
+            ]
+            if self.config.get("promote_preference")
+            else None
+        )
 
         with self.lock:
             if self.current_song:
                 time_str = self.format_time(self.song_progress)
                 length_str = self.format_time(self.song_length)
 
-                details = f"{self.current_song['title']} by {self.current_song['artist']}"
-                state = (f"{self.current_song['difficulty']} | "
-                        f"{time_str}/{length_str} | "
-                        f"Score: {self.score:,} | "
-                        f"Combo: {self.combo}x")
+                details = (
+                    f"{self.current_song['title']} by {self.current_song['artist']}"
+                )
+                state = (
+                    f"{self.current_song['difficulty']} | "
+                    f"{time_str}/{length_str} | "
+                    f"Score: {self.score:,} | "
+                    f"Combo: {self.combo}x"
+                )
 
                 self.presence.update(
                     details=details,
                     state=state,
-                    large_image=self.current_song['albumUrl'] or self.config.get("discord_application_logo_large"),
-                    #large_text=f"Playing Synth Riders VR",
+                    large_image=self.current_song["albumUrl"]
+                    or self.config.get("discord_application_logo_large"),
+                    # large_text=f"Playing Synth Riders VR",
                     large_text=f"Mapped by {self.current_song['mapper']}",
                     small_image=self.config.get("discord_application_logo_small"),
                     small_text=f"Mapped by {self.current_song['mapper']}",
                     # small_text=f"Life: {self.life*100:.0f}%",
                     buttons=buttons,
-                    start=self.start_time
+                    start=self.start_time,
                 )
             else:
                 self.presence.update(
@@ -229,7 +241,7 @@ class Presence:
                     state="Browsing menus",
                     large_image=self.config.get("discord_application_logo_large"),
                     buttons=buttons,
-                    start=self.start_time
+                    start=self.start_time,
                 )
 
     def format_time(self, seconds):

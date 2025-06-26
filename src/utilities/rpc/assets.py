@@ -6,6 +6,7 @@ class DiscordAssets:
 
     Can also be a URL. Example: https://raw.githubusercontent.com/6uhrmittag/Synth-Riders-DiscordRPC/refs/heads/master/assets/game_synthriders_logo_alt.png
     """
+
     # for the official Synth Riders SteamVR App
     # use "none" to show the default image
     LARGE_IMAGE = "https://raw.githubusercontent.com/6uhrmittag/Synth-Riders-DiscordRPC/refs/heads/master/assets/game_synthriders_logo_alt.png"

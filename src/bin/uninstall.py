@@ -47,13 +47,16 @@ def stop_running_process(console, process_name, timeout=5):
     found = False
 
     def terminate_process_tree(process):
-        """ Recursively terminate a process and its child processes. """
+        """Recursively terminate a process and its child processes."""
         try:
             children = process.children(recursive=True)  # Get all child processes
             for child in children:
                 console.print(
-                    indent(f"Stopping child process {child.name()} (PID: {child.pid})..."),
-                    style="yellow")
+                    indent(
+                        f"Stopping child process {child.name()} (PID: {child.pid})..."
+                    ),
+                    style="yellow",
+                )
                 child.terminate()
 
             process.terminate()  # Gracefully terminate the parent
@@ -63,15 +66,17 @@ def stop_running_process(console, process_name, timeout=5):
                 if not process.is_running():
                     console.print(
                         indent(f"{process.name()} (PID: {process.pid}) stopped."),
-                        style="green"
+                        style="green",
                     )
                     return
                 sleep(0.5)
 
             # Force kill if still running
             console.print(
-                indent(f"{process.name()} (PID: {process.pid}) did not terminate in time, forcing shutdown..."),
-                style="red"
+                indent(
+                    f"{process.name()} (PID: {process.pid}) did not terminate in time, forcing shutdown..."
+                ),
+                style="red",
             )
             process.kill()
 
@@ -80,9 +85,8 @@ def stop_running_process(console, process_name, timeout=5):
                     child.kill()
 
             console.print(
-                indent(f"{process.name()} forcefully stopped."),
-                style="green"
-                )
+                indent(f"{process.name()} forcefully stopped."), style="green"
+            )
 
         except (NoSuchProcess, AccessDenied, ZombieProcess):
             pass
@@ -92,7 +96,9 @@ def stop_running_process(console, process_name, timeout=5):
             if process.info["name"].lower() == process_name.lower():
                 found = True
                 console.print(
-                    indent(f"{process_name} is running! Stopping {process_name} (PID: {process.info['pid']})..."),
+                    indent(
+                        f"{process_name} is running! Stopping {process_name} (PID: {process.info['pid']})..."
+                    ),
                     style="yellow",
                 )
                 terminate_process_tree(Process(process.info["pid"]))
@@ -151,7 +157,9 @@ def remove_startup_task(console: Console):
             console.print(indent("Startup entry removed."), style="green")
 
     except FileNotFoundError:
-        console.print(indent("Startup entry not found, nothing to remove."), style="yellow")
+        console.print(
+            indent("Startup entry not found, nothing to remove."), style="yellow"
+        )
     except Exception as e:
         console.print(indent("Failed to remove the startup entry."), style="red")
         console.print_exception()

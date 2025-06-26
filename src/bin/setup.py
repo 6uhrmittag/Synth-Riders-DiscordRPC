@@ -25,7 +25,9 @@ from src.utilities.cli import (
 
 console = Console()
 
-DEFAULT_SYNTHRIDERS_INSTALL_LOCATION = r"C:\Program Files (x86)\Steam\steamapps\common\SynthRiders"
+DEFAULT_SYNTHRIDERS_INSTALL_LOCATION = (
+    r"C:\Program Files (x86)\Steam\steamapps\common\SynthRiders"
+)
 DEFAULT_RICH_PRESENCE_INSTALL_LOCATION = (
     rf"{getenv('LOCALAPPDATA')}\Synth Riders DiscordRPC"
 )
@@ -79,7 +81,9 @@ def get_config(console: Console) -> dict:
     synthriders_install_location = get_input(
         console,
         "WSynth Riders Install Location",
-        lambda: get_synthriders_install_location(console, DEFAULT_SYNTHRIDERS_INSTALL_LOCATION),
+        lambda: get_synthriders_install_location(
+            console, DEFAULT_SYNTHRIDERS_INSTALL_LOCATION
+        ),
     )
 
     config = {
@@ -120,7 +124,6 @@ def get_config(console: Console) -> dict:
         "image_upload_url": Config.IMAGE_UPLOAD_URL,
     }
 
-
     return config
 
 
@@ -135,13 +138,16 @@ def stop_running_process(console, process_name, timeout=5):
     found = False
 
     def terminate_process_tree(process):
-        """ Recursively terminate a process and its child processes. """
+        """Recursively terminate a process and its child processes."""
         try:
             children = process.children(recursive=True)  # Get all child processes
             for child in children:
                 console.print(
-                    indent(f"Stopping child process {child.name()} (PID: {child.pid})..."),
-                    style="yellow")
+                    indent(
+                        f"Stopping child process {child.name()} (PID: {child.pid})..."
+                    ),
+                    style="yellow",
+                )
                 child.terminate()
 
             process.terminate()  # Gracefully terminate the parent
@@ -151,15 +157,17 @@ def stop_running_process(console, process_name, timeout=5):
                 if not process.is_running():
                     console.print(
                         indent(f"{process.name()} (PID: {process.pid}) stopped."),
-                        style="green"
+                        style="green",
                     )
                     return
                 sleep(0.5)
 
             # Force kill if still running
             console.print(
-                indent(f"{process.name()} (PID: {process.pid}) did not terminate in time, forcing shutdown..."),
-                style="red"
+                indent(
+                    f"{process.name()} (PID: {process.pid}) did not terminate in time, forcing shutdown..."
+                ),
+                style="red",
             )
             process.kill()
 
@@ -168,9 +176,8 @@ def stop_running_process(console, process_name, timeout=5):
                     child.kill()
 
             console.print(
-                indent(f"{process.name()} forcefully stopped."),
-                style="green"
-                )
+                indent(f"{process.name()} forcefully stopped."), style="green"
+            )
 
         except (NoSuchProcess, AccessDenied, ZombieProcess):
             pass
@@ -180,14 +187,15 @@ def stop_running_process(console, process_name, timeout=5):
             if process.info["name"].lower() == process_name.lower():
                 found = True
                 console.print(
-                    indent(f"{process_name} is running! Stopping {process_name} (PID: {process.info['pid']})..."),
+                    indent(
+                        f"{process_name} is running! Stopping {process_name} (PID: {process.info['pid']})..."
+                    ),
                     style="yellow",
                 )
                 terminate_process_tree(Process(process.info["pid"]))
 
         except (NoSuchProcess, AccessDenied, ZombieProcess):
             continue
-
 
 
 def create_config_folder(console: Console, config: dict) -> None:
@@ -414,7 +422,9 @@ def add_to_startup_registry(console, config):
     :param config: The configuration options
     """
     try:
-        with console.status("Adding application to startup via registry...", spinner="dots"):
+        with console.status(
+            "Adding application to startup via registry...", spinner="dots"
+        ):
             shortcut_target = path.join(
                 config["rich_presence_install_location"],
                 Config.MAIN_EXECUTABLE_NAME,
@@ -425,13 +435,19 @@ def add_to_startup_registry(console, config):
             app_name = "SynthRidersRPC"
 
             with winreg.OpenKey(key, subkey, 0, winreg.KEY_SET_VALUE) as reg_key:
-                winreg.SetValueEx(reg_key, app_name, 0, winreg.REG_SZ, f'"{shortcut_target}"')
+                winreg.SetValueEx(
+                    reg_key, app_name, 0, winreg.REG_SZ, f'"{shortcut_target}"'
+                )
 
-            console.print("Executable successfully added to startup (Registry, no admin needed)", style="green")
+            console.print(
+                "Executable successfully added to startup (Registry, no admin needed)",
+                style="green",
+            )
 
     except Exception as e:
         console.print("Failed to add application to startup (Registry).", style="red")
         console.print_exception()
+
 
 def create_windows_shortcut(console: Console, config: dict) -> None:
     """
