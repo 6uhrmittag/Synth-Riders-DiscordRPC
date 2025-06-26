@@ -76,6 +76,33 @@ The covers are usually around 100-500kb in size, and they get deleted after 3h -
 4. Run `build.bat`
 5. The executable will be located in the `dist/` directory
 
+## Testing
+
+This project includes automated tests for core functionality. To run the tests:
+
+1. Install test dependencies: `pip install pytest flake8 black mypy`
+2. Run the tests: `pytest`
+
+### Cross-Platform Testing
+
+The tests can be run on both Windows and Ubuntu WSL (Windows Subsystem for Linux). For WSL, use the provided script:
+
+```bash
+./run_tests_wsl.sh
+```
+
+See the [tests/README.md](tests/README.md) for more details.
+
+### Continuous Integration
+
+This project uses GitHub Actions for continuous integration. The workflow runs tests on Ubuntu Linux to ensure cross-platform compatibility of the core logic.
+
+The CI workflow includes:
+- Running tests with pytest
+- Linting with flake8
+- Checking code formatting with black
+- Type checking with mypy
+
 # Issues
 
 If you encounter any issues, please open an issue on the [issues page](https://github.com/6uhrmittag/Synth-Riders-DiscordRPC/issues)
@@ -88,4 +115,3 @@ This is a third-party application and is not affiliated with Synth Riders or its
 
 - This tool is based on the work of [https://github.com/xAkre/Wuthering-Waves-RPC](https://github.com/xAkre/Wuthering-Waves-RPC)<3
 - Temporary Filehosting used to upload the artwork: https://uguu.se/ 🥰
-
