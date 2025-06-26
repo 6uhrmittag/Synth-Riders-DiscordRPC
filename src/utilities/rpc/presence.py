@@ -45,7 +45,7 @@ class Presence:
 
 
         self.presence = PyPresence(self.config.get("discord_application_id"))
-        self.ws_url = f"ws://{self.config.get("synthriders_websocket_host")}:{self.config.get("synthriders_websocket_port")}"
+        self.ws_url = f"ws://{self.config.get('synthriders_websocket_host')}:{self.config.get('synthriders_websocket_port')}"
 
     def start(self) -> None:
         """
