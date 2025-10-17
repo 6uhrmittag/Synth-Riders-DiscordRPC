@@ -9,6 +9,12 @@ from psutil import NoSuchProcess, Process, pids
 from pypresence import Presence as PyPresence
 
 from config import Config
+from src.constants import (
+    PRESENCE_UPDATE_INTERVAL,
+    DISCORD_RECONNECT_INTERVAL,
+    WEBSOCKET_RECONNECT_INTERVAL,
+    GAME_CHECK_INTERVAL,
+)
 from src.utilities.rpc import (
     DiscordAssets,
     Logger,
@@ -66,7 +72,7 @@ class Presence:
                 break
             except Exception as e:
                 self.logger.info("Waiting for Discord...")
-                sleep(15)
+                sleep(DISCORD_RECONNECT_INTERVAL)
 
     def start_websocket(self) -> None:
         """Start the websocket connection to SynthRiders"""
@@ -85,7 +91,7 @@ class Presence:
             self.logger.info("WebSocket connection closed")
             self.connected = False
             if self.synth_riders_process_exists():
-                sleep(5)
+                sleep(WEBSOCKET_RECONNECT_INTERVAL)
                 self.start_websocket()
 
         self.ws = WebSocketApp(self.ws_url,
@@ -193,7 +199,7 @@ class Presence:
                 break
 
             self.update_presence()
-            sleep(15)
+            sleep(PRESENCE_UPDATE_INTERVAL)
 
     def update_presence(self) -> None:
         """Update Discord Rich Presence with current state"""
@@ -244,7 +250,7 @@ class Presence:
         self.presence.clear()
         if self.config.get("keep_running_preference"):
             while not self.synth_riders_process_exists():
-                sleep(5)
+                sleep(GAME_CHECK_INTERVAL)
             self.start()
 
     def synth_riders_process_exists(self) -> bool:
