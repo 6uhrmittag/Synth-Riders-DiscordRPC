@@ -30,24 +30,24 @@ cd Synth-Riders-DiscordRPC
 ### 2. Create Virtual Environment
 
 ```bash
-python -m venv venv
+python -m venv .venv
 ```
 
 ### 3. Activate Virtual Environment
 
 **Windows (PowerShell):**
 ```powershell
-.\venv\Scripts\Activate.ps1
+.\.venv\Scripts\Activate.ps1
 ```
 
 **Windows (CMD):**
 ```cmd
-venv\Scripts\activate.bat
+.venv\Scripts\activate.bat
 ```
 
 **Linux/Mac:**
 ```bash
-source venv/bin/activate
+source .venv/bin/activate
 ```
 
 ### 4. Install Dependencies
