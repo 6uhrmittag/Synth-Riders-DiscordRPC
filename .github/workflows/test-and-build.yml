@@ -41,7 +41,9 @@ jobs:
       
       - name: Run tests with pytest
         run: |
+          $env:PYTHONPATH = "${{ github.workspace }}"
           pytest tests/ -v --tb=short --junitxml=test-results.xml
+        shell: pwsh
       
       - name: Upload test results
         if: always()
