@@ -1,7 +1,9 @@
 import os
 import re
-# from sqlite3 import Connection
-from time import sleep, time
+import json
+import threading
+import time
+from time import sleep
 
 from psutil import NoSuchProcess, Process, pids
 from pypresence import Presence as PyPresence
@@ -11,11 +13,6 @@ from src.utilities.rpc import (
     DiscordAssets,
     Logger,
 )
-
-# required for Synth Riders
-import json
-import threading
-import time
 
 from websocket import WebSocketApp
 
@@ -61,7 +58,8 @@ class Presence:
         except Exception as e:
             self.logger.error(f"An error occurred: {e}")
 
-    def connect_discord(self):
+    def connect_discord(self) -> None:
+        """Connect to Discord and retry if connection fails"""
         while True:
             try:
                 self.presence.connect()
@@ -70,7 +68,8 @@ class Presence:
                 self.logger.info("Waiting for Discord...")
                 sleep(15)
 
-    def start_websocket(self):
+    def start_websocket(self) -> None:
+        """Start the websocket connection to SynthRiders"""
         def on_message(ws, message):
             try:
                 data = json.loads(message)
@@ -99,6 +98,7 @@ class Presence:
         ws_thread.start()
 
     def upload_base64_image(self, upload_url: str, base64_string: str) -> str:
+        """Upload a base64 encoded image to a file hosting service"""
         # Extract the base64 part from the data URL
         match = re.match(r'data:image/\w+;base64,(.*)', base64_string)
         if not match:
@@ -137,7 +137,8 @@ class Presence:
             raise ValueError(f"Upload failed with status code {response.status_code}: {response.text}")
 
 
-    def handle_websocket_event(self, data):
+    def handle_websocket_event(self, data: dict) -> None:
+        """Handle websocket events from SynthRiders"""
         event_type = data.get("eventType")
         event_data = data.get("data", {})
 
@@ -182,7 +183,7 @@ class Presence:
 
 
 
-    def rpc_loop(self):
+    def rpc_loop(self) -> None:
         """
         Loop to keep the RPC running
         """
@@ -194,7 +195,8 @@ class Presence:
             self.update_presence()
             sleep(15)
 
-    def update_presence(self):
+    def update_presence(self) -> None:
+        """Update Discord Rich Presence with current state"""
         buttons = [{
             "label": "Want this status too?",
             "url": "https://github.com/6uhrmittag/Synth-Riders-DiscordRPC"
@@ -232,10 +234,12 @@ class Presence:
                     start=self.start_time
                 )
 
-    def format_time(self, seconds):
+    def format_time(self, seconds: float) -> str:
+        """Format seconds to MM:SS string"""
         return time.strftime("%M:%S", time.gmtime(seconds))
 
-    def handle_game_exit(self):
+    def handle_game_exit(self) -> None:
+        """Handle game exit and optionally keep running"""
         self.logger.info("Synth Riders closed")
         self.presence.clear()
         if self.config.get("keep_running_preference"):
@@ -243,9 +247,9 @@ class Presence:
                 sleep(5)
             self.start()
 
-    def synth_riders_process_exists(self):
+    def synth_riders_process_exists(self) -> bool:
         """
-        Check whether the Wuthering Waves process is running
+        Check whether the Synth Riders process is running
 
         :return: True if the process is running, False otherwise
         """
