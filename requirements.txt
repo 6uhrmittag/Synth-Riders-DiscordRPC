@@ -1,7 +1,11 @@
-pypresence
-psutil
-pyinstaller
-rich
-pywin32
-websocket-client
-requests
+# Python dependencies for Synth Riders DiscordRPC
+# Versions are pinned to ensure reproducible builds and prevent breaking changes
+# Update versions carefully and test thoroughly before deploying
+
+pypresence==4.6.0      # Discord Rich Presence library
+psutil==7.1.0          # Process and system utilities
+pyinstaller==6.11.1    # Create standalone executables
+rich==14.2.0           # Terminal formatting and output
+pywin32==311           # Windows API access
+websocket-client==1.9.0  # WebSocket client for SynthRiders mod
+requests==2.32.5       # HTTP library for image uploads

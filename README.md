@@ -82,10 +82,11 @@ If you encounter any issues, please open an issue on the [issues page](https://g
 
 ## Warning
 
-This is a third-party application and is not affiliated with Synth Riders or its developers.
+1. This is a third-party application and is not affiliated with Synth Riders or its developers.
+2. The code relies heavily on AI coding with GitHub Copilot and Cursor AI; do not expect clever or beautiful code ;D 
 
 # Credits
 
 - This tool is based on the work of [https://github.com/xAkre/Wuthering-Waves-RPC](https://github.com/xAkre/Wuthering-Waves-RPC)<3
 - Temporary Filehosting used to upload the artwork: https://uguu.se/ 🥰
-
+- tons of help from GitHub Copilot and Cursor AI

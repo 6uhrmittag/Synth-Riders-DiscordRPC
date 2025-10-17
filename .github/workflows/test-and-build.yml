@@ -1,0 +1,195 @@
+name: Test and Build
+
+on:
+  push:
+    branches:
+      - '**'  # Run on all branches
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~\AppData\Local\pip\Cache
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt', '**/requirements-test.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r tests/requirements-test.txt
+      
+      - name: Run tests with pytest
+        run: |
+          $env:PYTHONPATH = "${{ github.workspace }}"
+          pytest tests/ -v --tb=short --junitxml=test-results.xml
+        shell: pwsh
+      
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results.xml
+          retention-days: 30
+
+  build:
+    name: Build Executables
+    needs: test
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~\AppData\Local\pip\Cache
+          key: ${{ runner.os }}-pip-build-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-build-
+            ${{ runner.os }}-pip-
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Build executables
+        run: |
+          .\build.bat
+      
+      - name: Get version from config
+        id: get_version
+        run: |
+          $version = (python -c "from config import Config; print(Config.VERSION)")
+          echo "version=$version" >> $env:GITHUB_OUTPUT
+        shell: pwsh
+      
+      - name: Prepare artifact metadata
+        id: metadata
+        run: |
+          $branch = "${{ github.ref_name }}" -replace '/', '-'
+          $sha = "${{ github.sha }}".Substring(0, 7)
+          
+          if ("${{ github.ref_name }}" -eq "main" -or "${{ github.ref_name }}" -eq "master") {
+            $artifact_name = "synth-riders-discordrpc-v${{ steps.get_version.outputs.version }}-${sha}"
+            $is_release = "true"
+          } else {
+            $artifact_name = "synth-riders-discordrpc-${branch}-${sha}"
+            $is_release = "false"
+          }
+          
+          echo "artifact_name=$artifact_name" >> $env:GITHUB_OUTPUT
+          echo "is_release=$is_release" >> $env:GITHUB_OUTPUT
+          echo "sha=$sha" >> $env:GITHUB_OUTPUT
+          echo "branch=$branch" >> $env:GITHUB_OUTPUT
+        shell: pwsh
+      
+      - name: Create build info file
+        run: |
+          $info = @"
+          Build Information
+          =================
+          Version: ${{ steps.get_version.outputs.version }}
+          Branch: ${{ github.ref_name }}
+          Commit: ${{ github.sha }}
+          Short SHA: ${{ steps.metadata.outputs.sha }}
+          Build Date: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss UTC')
+          Workflow: ${{ github.workflow }}
+          Run Number: ${{ github.run_number }}
+          
+          $(if ("${{ steps.metadata.outputs.is_release }}" -eq "false") {
+            "⚠️  WARNING: This is a TESTING BUILD from branch '${{ github.ref_name }}'`n⚠️  NOT FOR PRODUCTION USE"
+          } else {
+            "✅ Release candidate build from ${{ github.ref_name }} branch"
+          })
+          
+          Files Included
+          ==============
+          - Synth Riders DiscordRPC.exe (Main application)
+          - Uninstall Synth Riders DiscordRPC.exe (Uninstaller)
+          - Synth Riders DiscordRPC Setup.exe (Installer)
+          
+          Installation
+          ============
+          Run "Synth Riders DiscordRPC Setup.exe" and follow the installation wizard.
+          
+          For more information, see:
+          https://github.com/${{ github.repository }}
+          "@
+          $info | Out-File -FilePath dist/BUILD_INFO.txt -Encoding UTF8
+        shell: pwsh
+      
+      - name: Upload build artifacts (Main/Master branch)
+        if: steps.metadata.outputs.is_release == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.metadata.outputs.artifact_name }}
+          path: |
+            dist/*.exe
+            dist/BUILD_INFO.txt
+          retention-days: 90
+      
+      - name: Upload build artifacts (Testing branch)
+        if: steps.metadata.outputs.is_release == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.metadata.outputs.artifact_name }}
+          path: |
+            dist/*.exe
+            dist/BUILD_INFO.txt
+          retention-days: 30
+      
+      - name: Build Summary
+        run: |
+          echo "### Build Complete ✅" >> $env:GITHUB_STEP_SUMMARY
+          echo "" >> $env:GITHUB_STEP_SUMMARY
+          echo "**Version:** ${{ steps.get_version.outputs.version }}" >> $env:GITHUB_STEP_SUMMARY
+          echo "**Branch:** ${{ github.ref_name }}" >> $env:GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ steps.metadata.outputs.sha }}" >> $env:GITHUB_STEP_SUMMARY
+          echo "**Artifact:** ${{ steps.metadata.outputs.artifact_name }}" >> $env:GITHUB_STEP_SUMMARY
+          echo "" >> $env:GITHUB_STEP_SUMMARY
+          
+          if ("${{ steps.metadata.outputs.is_release }}" -eq "true") {
+            echo "✅ **Release candidate build**" >> $env:GITHUB_STEP_SUMMARY
+            echo "Retention: 90 days" >> $env:GITHUB_STEP_SUMMARY
+          } else {
+            echo "⚠️  **Testing build - Not for production**" >> $env:GITHUB_STEP_SUMMARY
+            echo "Retention: 30 days" >> $env:GITHUB_STEP_SUMMARY
+          }
+          
+          echo "" >> $env:GITHUB_STEP_SUMMARY
+          echo "#### Files Built:" >> $env:GITHUB_STEP_SUMMARY
+          echo "- Synth Riders DiscordRPC.exe" >> $env:GITHUB_STEP_SUMMARY
+          echo "- Uninstall Synth Riders DiscordRPC.exe" >> $env:GITHUB_STEP_SUMMARY
+          echo "- Synth Riders DiscordRPC Setup.exe" >> $env:GITHUB_STEP_SUMMARY
+        shell: pwsh
+
